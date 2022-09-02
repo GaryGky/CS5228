@@ -1,53 +1,18 @@
+import numpy as np
 import pandas as pd
 
 from sklearn.metrics.pairwise import euclidean_distances
 
 
 def get_noise_dbscan(X, eps=0.0, min_samples=0):
-    euc_mat = euclidean_distances(X, X)
-    labels = [0] * len(euc_mat)
-    c = 1
+    # Identify the indices of all core points: (before exploration)
+    neighbours = euclidean_distances(X) < eps
+    core_point_indices = np.where(np.sum(neighbours, axis=1) >= min_samples)[0]
 
-    for point in range(0, len(X)):
-        if not (labels[point] == 0):
-            continue
-        neighbors = region_query(euc_mat, point, eps)
-        if len(neighbors) < min_samples:
-            labels[point] = -1
-        else:
-            grow_cluster(euc_mat, labels, point, neighbors, c, eps, min_samples)
-
-    core_point_indices, noise_point_indices = [], []
-    for i in range(len(labels)):
-        if labels[i] == -1:
-            noise_point_indices.append(i)
-        else:
-            core_point_indices.append(i)
+    # 2.1 b) Identify the indices of all noise points ==> noise_point_indices
+    points_to_corepoints = euclidean_distances(X, X[core_point_indices])
+    noise_point_indices = np.where(np.sum(points_to_corepoints < eps, axis=1) == 0)[0]
     return core_point_indices, noise_point_indices
-
-
-def grow_cluster(data, labels, point, neighbor_pts, c, eps, min_pts):
-    labels[point] = c
-    i = 0
-    while i < len(neighbor_pts):
-        pn = neighbor_pts[i]
-        if labels[pn] == -1:
-            labels[pn] = c
-        elif labels[pn] == 0:
-            # Add Pn to cluster C (Assign cluster label C).
-            labels[pn] = c
-            pn_neighbor_pts = region_query(data, pn, eps)
-            if len(pn_neighbor_pts) >= min_pts:
-                neighbor_pts = neighbor_pts + pn_neighbor_pts
-        i += 1
-
-
-def region_query(data_mat, index, eps):
-    neighbours = []
-    for pn in range(0, len(data_mat)):
-        if data_mat[index][pn] < eps:
-            neighbours.append(pn)
-    return neighbours
 
 
 if __name__ == '__main__':
