@@ -1,0 +1,1 @@
+zip -q -r Submit_E0925478.zip ./submission/
