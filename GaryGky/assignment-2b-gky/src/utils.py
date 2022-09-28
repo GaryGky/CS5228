@@ -20,7 +20,7 @@ def plot_validation_results(param_to_scores):
     plt.errorbar(sorted(param_to_validation_scores.keys()), score_mean, yerr=score_std)
     
     plt.xlabel('param')
-    plt.ylabel('Cross-Validation F1 Score')
+    plt.ylabel('Mean Square Error')
     plt.show()
     
     
@@ -44,5 +44,5 @@ def plot_scores(param_to_scores):
     plt.plot(sorted(param_to_validation_scores.keys()), validation_score_mean)
     
     plt.xlabel('param')
-    plt.ylabel('Cross-Validation F1 Score')
+    plt.ylabel('Mean Square Error')
     plt.show()    
