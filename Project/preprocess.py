@@ -42,7 +42,10 @@ def parse_available_unit_types(s: str):
 def filter_outlier_price_per_sqft(data):
     data['price_per_sqft'] = data['price'] / data['size_sqft']
     print("before filtering: ", data.price_per_sqft.describe())
-    data = data[(data['price_per_sqft'] <= data["price_per_sqft"].quantile(1 - 0.005)) & (data['price_per_sqft'] >= data["price_per_sqft"].quantile(0.005))]
+    data_copy = data.copy()
+    MIN, MAX = 100, 100000
+    outliers = data_copy[(data_copy['price_per_sqft'] < MIN) | (data_copy['price_per_sqft'] > MAX)]
+    data = data[(data['price_per_sqft'] >= MIN) & (data['price_per_sqft'] <= MAX)]
     print("after filtering: ", data.price_per_sqft.describe())
     data = data.drop(['price_per_sqft'], axis=1)
-    return data
+    return data, outliers
