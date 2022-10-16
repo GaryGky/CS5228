@@ -3,6 +3,9 @@ import pandas as pd
 import numpy as np
 
 def preprocess_property_type(s: str):
+    if not isinstance(s, str):
+        return pd.NA
+
     s = s.lower()
     types = ["hdb", "condo", "house", "bungalow", "apartment", "landed"]
     for t in types:
@@ -11,6 +14,9 @@ def preprocess_property_type(s: str):
     return "other"
 
 def preprocess_tenure(s: str):
+    if not isinstance(s, str):
+        return pd.NA
+
     s = s.lower()
     match = re.match("(\d+)-year leasehold.*", s)
     if match and match.groups():
