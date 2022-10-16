@@ -1,4 +1,6 @@
 import re
+import pandas as pd
+import numpy as np
 
 def preprocess_property_type(s: str):
     s = s.lower()
@@ -49,3 +51,24 @@ def filter_outlier_price_per_sqft(data):
     print("after filtering: ", data.price_per_sqft.describe())
     data = data.drop(['price_per_sqft'], axis=1)
     return data, outliers
+
+def preprocessing_address(address: str):
+    address = str(address)
+    if '/' in address:
+        return pd.NA
+
+    address_words = address.split()
+    valid_words = []
+    for word in address_words:
+        if re.match("[ ]+", word):
+            print("here: ", word)
+            continue
+        elif re.match("\d+[a-zA-Z]*", word):
+            continue
+        valid_words.append(word)
+    
+    processed_address = ' '.join(valid_words)
+    if re.match("[ ]+", processed_address):
+        return pd.NA
+
+    return processed_address
