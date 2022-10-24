@@ -6,4 +6,5 @@ reference
 crelax
 submission
 *.DS_Store
+data
 __pycache__
